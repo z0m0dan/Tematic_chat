@@ -8,3 +8,8 @@ export type chatData = {
     id: string
     nombre: string
 }
+
+export type user ={
+    nombre: string
+    username: string
+}

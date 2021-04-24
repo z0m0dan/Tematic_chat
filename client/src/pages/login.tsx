@@ -1,12 +1,19 @@
-import { Form, Formik } from 'formik'
-import React from 'react'
-import { InputField } from "../components/InputField"
-import Wrapper from "../components/Wrapper"
-import { Flex, Button, Text } from "@chakra-ui/react";
-import { useHistory } from 'react-router-dom'
+import { Button, Flex, Text } from "@chakra-ui/react";
+import { Form, Formik } from 'formik';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { InputField } from "../components/InputField";
+import Wrapper from "../components/Wrapper";
 
 const Login = () => {
     const router = useHistory() 
+
+    if(localStorage.getItem('qid'))
+        router.push('/dashboard')
+
+        function handleRegister (){
+            alert('Te quieres registrar eh!')
+        }
     return ( 
      <React.Fragment>
          <Flex
@@ -18,14 +25,32 @@ const Login = () => {
                textAlign='center'
                 fontWeight='bold'
             >Inicio de sesión</Text>
-           <Formik initialValues={{}} 
-           onSubmit={(values, actions) => {
-               alert(JSON.stringify(values))
-               actions.setSubmitting(true)
-                setTimeout(()=> {
-                    actions.setSubmitting(false)
-                    router.push('/dashboard')
-                }, 2000)
+           <Formik initialValues={{username:'', password: ''}} 
+           onSubmit={async(values, actions) => {
+            actions.setSubmitting(true)
+               try{
+     
+                const response = await fetch('http://localhost:5000/auth/login',
+                {
+                    method: "POST",
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values)
+                })
+                    if(response.status===404 )
+                   {
+                    alert('El usuario no existe')
+                    return
+                   }
+                const data = await response.json()
+                   localStorage.setItem('qid', data.token)
+                   router.push('/dashboard')
+               
+               }catch(e){
+                    alert(e.message)
+               }
+               actions.setSubmitting(false)
            }}>
                {({isSubmitting})=> (
                    <Form>
@@ -36,6 +61,12 @@ const Login = () => {
                             colorScheme='red'
                             isLoading={isSubmitting}
                         >Iniciar Sesión</Button>
+                        <Button
+                        mt={5}
+                        mx={5}
+                        colorScheme='green'
+                        onClick={handleRegister}
+                        >Registrarse</Button>
                    </Form>
                )}
            </Formik>

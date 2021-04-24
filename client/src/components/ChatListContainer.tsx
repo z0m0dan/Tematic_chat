@@ -1,21 +1,23 @@
-import { Box, Flex, Text, Avatar, Button, Divider} from "@chakra-ui/react"
+import { Box, Flex, Text, Avatar, Button, Divider, Menu, 
+    MenuButton, MenuList, MenuItem} from "@chakra-ui/react"
 import { AddIcon, SearchIcon } from '@chakra-ui/icons'
-import { chatData } from "../types"
+import { chatData, user } from "../types"
 import { Socket } from "socket.io-client"
 import { DefaultEventsMap } from "socket.io-client/build/typed-events"
+import { useHistory } from "react-router"
 
 interface SidebarProps {
     selectedChat: chatData 
     selectorChat: React.Dispatch<React.SetStateAction<chatData>>
     ChatClient: Socket<DefaultEventsMap, DefaultEventsMap>
-
+    currentUser: user
 }
 
 
 export const ChatsListContainer: React.FC<SidebarProps> = (props) => {
     return (
     <Flex w='20%' maxh='100%' h='100vh'  direction='column' borderRight='1px'>
-        <SidebarHeader name='Jonathan Marquez'/>
+        <SidebarHeader name={props.currentUser.nombre}/>
         <SidebarContent>
             <ChatContentAdd/>
             <ChatContentSearch/>
@@ -45,9 +47,29 @@ type headerProps = {
 }
 const SidebarHeader: React.FC<headerProps>=  (props) =>
 {
+    const router = useHistory()
+    function handleLogout (){
+        localStorage.removeItem('qid')
+        router.push('/')
+    }
     return(
     <Flex w='100%' h='8%'  alignItems='center' px='1em' justifyContent='space-between'>
-      <Avatar  src="https://bit.ly/broken-link" w='20%'/>
+                <Menu >
+                    <MenuButton
+                        as={Avatar}
+                        aria-label="Options"                        
+                        variant="outline"
+                    />
+                    <MenuList>
+                        <MenuItem  >
+                        Mi perfil
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout} >
+                        Cerrar sesion
+                        </MenuItem>
+                    </MenuList>
+                </Menu>
+   
       <Text fontSize='lg'>{props.name}</Text>
     </Flex>
     )

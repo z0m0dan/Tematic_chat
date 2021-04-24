@@ -10,14 +10,14 @@ import { useState } from 'react'
 import { MdMoreVert } from 'react-icons/md'
 import { Socket } from 'socket.io-client'
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events'
-import { chatData, Message } from '../types'
+import { chatData, Message, user } from '../types'
 
 
 interface MainChatContainerProps { 
     getMessages: Message[]
     setNewMessage: (Message: Message) => void
     ChatClient: Socket<DefaultEventsMap, DefaultEventsMap>
-    CurrentUser: string
+    CurrentUser: user
     selectedChat: chatData 
     selectorChat: React.Dispatch<React.SetStateAction<chatData>>
     cleanMessages: () => void
@@ -47,7 +47,7 @@ export const MainChatContainer: React.FC<MainChatContainerProps> = (props) => {
                         Message={item.Message}
                         Sender={item.Sender}
                         Time={item.Time}
-                        isMe={props.CurrentUser===item.Sender ? true: false}
+                        isMe={props.CurrentUser.nombre===item.Sender ? true: false}
                    />
                 }) : 
                     <NotificationMessage Message='Aun no hay ningun mensaje escrito, Esscribe uno!'/>
@@ -104,9 +104,6 @@ const TitleBarChat: React.FC<TitleBarProps> = (props) => {
                         </MenuItem>
                         <MenuItem  onClick={handleCloseChat}>
                         Salir del chat actual
-                        </MenuItem>
-                        <MenuItem  >
-                        Cerrar Sesion
                         </MenuItem>
                     </MenuList>
                 </Menu>

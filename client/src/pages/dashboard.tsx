@@ -2,17 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { MainChatContainer } from '../components/ChatBody'
 import { ChatsListContainer } from '../components/ChatListContainer'
 import { Flex } from '@chakra-ui/react'
-import { chatData, Message } from '../types'
+import { chatData, Message, user } from '../types'
 import { io } from 'socket.io-client'
+import { useHistory } from 'react-router'
 
 
 const cliente = io('http://localhost:5000')
-let nombre:string | null
 
 const Dashboard = () => {
     const [getMessages, setMessages] = useState(new Array<Message>())
     const [selectedChat, setSelectedChat] = useState<chatData>({id:'', nombre:''})
-    const [currentUser, setCurrentUser] = useState('')
+    const [currentUser, setCurrentUser] = useState<user>({
+        username:'',
+        nombre:''
+    })
+    const router = useHistory()
     const setNewMessage = (Message: Message) => {
         setMessages(Messages => [...Messages, Message])
     }
@@ -20,9 +24,24 @@ const Dashboard = () => {
         setMessages(new Array<Message>())
     }
 
+
+   
     useEffect(()=> {
-       nombre = prompt('Cual es el nombre que usaras?')
-        cliente.emit('Register', nombre)
+        fetch('http://localhost:5000/auth/me',
+    {
+        headers:{
+            "Authorization": 'Bearer '+localStorage.getItem('qid')
+        }
+    }).then(res=> res.json())
+        .then(data => {
+            setCurrentUser({
+            nombre: data.name,
+            username: data.username
+        })
+        cliente.emit('Register', data.name)
+        }
+        ).catch(error => alert(error))
+       
         cliente.on('Bienvenida', (Mensaje) => {
             setNewMessage({
                 Sender: 'SERVER', 
@@ -49,8 +68,8 @@ const Dashboard = () => {
         })
     }, [])
 
-
-
+    if(!localStorage.getItem('qid'))
+         router.push('/')
     return(
     <React.Fragment>
         <Flex>
@@ -58,12 +77,13 @@ const Dashboard = () => {
              selectedChat={selectedChat}
              selectorChat={setSelectedChat}
              ChatClient={cliente}
+             currentUser={currentUser}
         />
         <MainChatContainer
             getMessages={getMessages}
             setNewMessage={setNewMessage}
             ChatClient={cliente}
-            CurrentUser={!nombre? '': nombre}
+            CurrentUser={currentUser}
             selectedChat={selectedChat}
             selectorChat={setSelectedChat}
             cleanMessages={eraseMessages}

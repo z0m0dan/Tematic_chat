@@ -19,17 +19,13 @@ const Register: React.FC = () => {
             initialValues={{ username: "", password: "", name: "" }}
             onSubmit={async (values, actions) => {
               try {
-                const reponse = await fetch(
-                  "http://localhost:5000/users/register",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(values),
-                  }
-                );
-
+                await fetch("http://localhost:5000/users/register", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(values),
+                });
                 alert("Registrado correctamente");
                 router.push("/");
               } catch (error) {

@@ -15,6 +15,7 @@ import { chatData, user } from "../types";
 import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "socket.io-client/build/typed-events";
 import { useHistory } from "react-router";
+import React from "react";
 
 interface SidebarProps {
   selectedChat: chatData;
@@ -161,3 +162,7 @@ const ChatContentAdd: React.FC = () => {
     </Button>
   );
 };
+// type ProfileDrawerProps = {};
+// const MyProfileDrawer: React.FC<ProfileDrawerProps> = () => {
+//   return <Text></Text>;
+// };

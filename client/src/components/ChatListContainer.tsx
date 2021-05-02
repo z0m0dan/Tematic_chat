@@ -9,6 +9,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  useColorMode,
 } from "@chakra-ui/react";
 import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 import { chatData, user } from "../types";
@@ -40,14 +41,12 @@ export const ChatsListContainer: React.FC<SidebarProps> = (props) => {
         </Text>
         <SidebarItem
           nombreChat="publico"
-          contador={21}
           selectedChat={props.selectedChat}
           selectorChat={props.selectorChat}
           ChatClient={props.ChatClient}
         />
         <SidebarItem
           nombreChat="La casona"
-          contador={0}
           selectedChat={props.selectedChat}
           selectorChat={props.selectorChat}
           ChatClient={props.ChatClient}
@@ -63,6 +62,7 @@ type headerProps = {
 };
 const SidebarHeader: React.FC<headerProps> = (props) => {
   const router = useHistory();
+  const { colorMode, toggleColorMode } = useColorMode();
   function handleLogout() {
     localStorage.removeItem("qid");
     props.ChatClient.disconnect();
@@ -80,6 +80,9 @@ const SidebarHeader: React.FC<headerProps> = (props) => {
         <MenuButton as={Avatar} aria-label="Options" variant="outline" />
         <MenuList>
           <MenuItem>Mi perfil</MenuItem>
+          <MenuItem onClick={toggleColorMode}>
+            Cambiar a modo {colorMode === "dark" ? "Claro" : "Oscuro"}
+          </MenuItem>
           <MenuItem onClick={handleLogout}>Cerrar sesion</MenuItem>
         </MenuList>
       </Menu>
@@ -98,7 +101,6 @@ const SidebarContent: React.FC = (props) => {
 };
 type sidebarItemProps = {
   nombreChat: string;
-  contador: number;
   selectedChat: chatData;
   selectorChat: React.Dispatch<React.SetStateAction<chatData>>;
   ChatClient: Socket<DefaultEventsMap, DefaultEventsMap>;
@@ -137,10 +139,13 @@ const SidebarItem: React.FC<sidebarItemProps> = (props) => {
       borderRadius="lg"
       px="5px"
     >
-      <Avatar name="Foto Prueba" src="https://bit.ly/broken-link" w="20%" />
+      <Avatar
+        name={props.nombreChat}
+        src="https://bit.ly/broken-link"
+        w="20%"
+      />
       <Flex direction="column" w="80%" justify="center" alignItems="center">
         <Text>{props.nombreChat}</Text>
-        <Text>Usuarios activos: {props.contador}</Text>
       </Flex>
     </Flex>
   );

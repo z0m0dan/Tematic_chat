@@ -1,26 +1,26 @@
 import {
   Avatar,
-  Flex,
-  Icon,
-  Text,
-  IconButton,
-  Spacer,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  Badge,
   Box,
-  Input,
   Button,
-  HStack,
   Drawer,
-  DrawerOverlay,
+  DrawerBody,
   DrawerContent,
   DrawerHeader,
-  DrawerBody,
-  useDisclosure,
+  DrawerOverlay,
+  Flex,
+  HStack,
+  Icon,
+  IconButton,
+  Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Spacer,
   Stack,
-  Badge,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { MdMoreVert } from "react-icons/md";
@@ -48,7 +48,13 @@ export const MainChatContainer: React.FC<MainChatContainerProps> = (props) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Text fontSize="3xl" fontWeight="bold" color="blue.600">
+        <Text
+          fontSize="3xl"
+          fontWeight="bold"
+          color="blue.600"
+          mx="3em"
+          textAlign="center"
+        >
           No estás en ninguna sala, ingresa a una en el panel de la izquierda :)
         </Text>
       </Flex>

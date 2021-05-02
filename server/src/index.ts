@@ -3,13 +3,16 @@ import { EntityRepository } from "@mikro-orm/mongodb";
 import cors from "cors";
 import express from "express";
 import http from "http";
+import morgan from "morgan";
 import "reflect-metadata";
 import socket from "socket.io";
 import { __prod__ } from "./constants";
+import { ApiController } from "./controllers/api.users.controller";
 import { AuthController } from "./controllers/authController";
 import { UserController } from "./controllers/user.controller";
 import mikroOrmConfig from "./mikro-orm.config";
 import { Users } from "./models/users";
+
 declare module "express-session" {
   interface SessionData {
     token: string;
@@ -53,6 +56,7 @@ const Main = async () => {
   DI.usersRepository = DI.orm.em.getRepository(Users);
 
   app.use(express.json());
+  app.use(morgan("dev"));
   app.use(
     cors({
       origin: "*",
@@ -71,6 +75,8 @@ const Main = async () => {
   app.use("/users", UserController);
 
   app.use("/auth", AuthController);
+
+  app.use("/api", ApiController);
 
   app.get("*", (req, res) => {
     res.status(404).json({

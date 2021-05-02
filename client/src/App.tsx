@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Index from "./pages/login";
 import Dashboard from "./pages/dashboard";
+import Index from "./pages/login";
 import Register from "./pages/register";
 const App = () => {
   return (
